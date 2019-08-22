@@ -7,23 +7,38 @@ Prototype Refactor
 2. Your goal is to refactor all of this code to use ES6 Classes. The console.log() statements should still return what is expected of them.
 
 */
-=== GameObject ===
-* createdAt
-* name
-* dimensions (These represent the character's size in the video game)
-* destroy() // prototype method that returns: `${this.name} was removed from the game.`
-*/
+// === GameObject ===
+// createdAt
+// name
+// dimensions (These represent the character's size in the video game)
+// destroy() // prototype method that returns: `${this.name} was removed from the game.`
 
-//create the constructor
-function GameObject(obj){
-this.createdAt = obj.createdAt;
-this.name = obj.name;
-this.dimensions = obj.dimensions;
+
+//refactored into class
+class GameObject{
+    constructor(obj){
+        this.createdAt = obj.createdAt;
+        this.name = obj.name;
+        this.dimensions = obj.dimensions;   
+    }
+
+    destroy(){
+     return `${this.name} was removed from the game.`;
+    }
 }
-//destroy prototype
-GameObject.prototype.destroy = function(){
-return `${this.name} was removed from the game.`;
-}
+
+
+
+// //create the constructor
+// function GameObject(obj){
+// this.createdAt = obj.createdAt;
+// this.name = obj.name;
+// this.dimensions = obj.dimensions;
+// }
+// //destroy prototype
+// GameObject.prototype.destroy = function(){
+// return `${this.name} was removed from the game.`;
+// }
 
 //Object.create test
 // let newGame = new GameObject({
@@ -41,16 +56,29 @@ return `${this.name} was removed from the game.`;
 * should inherit destroy() from GameObject's prototype
 */
 
-function CharacterStats(obj){
-GameObject.call(this,obj);
-this.healthPoints = obj.healthPoints
+
+//refactor to class
+
+class CharacterStats extends GameObject{
+    constructor(obj){
+        super(obj);
+        this.healthPoints = obj.healthPoints
+    }
+    takeDamage(){
+        return `${this.name} took damage.`;
+    }
 }
+
+// function CharacterStats(obj){
+// GameObject.call(this,obj);
+// this.healthPoints = obj.healthPoints
+// }
+// // CharacterStats.prototype = Object.create(GameObject.prototype);
+// // CharacterStats.prototype = Object.create(GameObject.prototype);
 // CharacterStats.prototype = Object.create(GameObject.prototype);
-// CharacterStats.prototype = Object.create(GameObject.prototype);
-CharacterStats.prototype = Object.create(GameObject.prototype);
-CharacterStats.prototype.takeDamage = function(){
-return `${this.name} took damage.`;
-}
+// CharacterStats.prototype.takeDamage = function(){
+
+// }
 
 /*
 === Humanoid (Having an appearance or character resembling that of a human.) ===
@@ -62,24 +90,38 @@ return `${this.name} took damage.`;
 * should inherit takeDamage() from CharacterStats
 */
 
-function Humanoid(obj){
-// GameObject.call(this,obj);
-CharacterStats.call(this,obj);
-this.team = obj.team,
-this.weapons = obj.weapons,
-this.language = obj.language
+//refactor to class
+
+class Humanoid extends CharacterStats{
+    constructor(obj){
+        super(obj);
+        this.team = obj.team,
+        this.weapons = obj.weapons,
+        this.language = obj.language
+    }
+    greet(){
+        return `${this.name} offers a greeting in ${this.language}`;
+    }
 }
+
+// function Humanoid(obj){
+// // GameObject.call(this,obj);
+// CharacterStats.call(this,obj);
+// this.team = obj.team,
+// this.weapons = obj.weapons,
+// this.language = obj.language
+// }
 
 // let newHumanoid = new Humanoid({
 //   team: "team",
 //   weapons: "gun",
 //   language: "english"
 // })
-Humanoid.prototype = Object.create(CharacterStats.prototype);
+// Humanoid.prototype = Object.create(CharacterStats.prototype);
 
-Humanoid.prototype.greet = function(){
-return `${this.name} offers a greeting in ${this.language}`;
-}
+// Humanoid.prototype.greet = function(){
+// return `${this.name} offers a greeting in ${this.language}`;
+// }
 
 /*
 * Inheritance chain: GameObject -> CharacterStats -> Humanoid
@@ -158,26 +200,106 @@ console.log(mage.takeDamage()); // Bruce took damage.
 // Stretch task: 
 // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
 
-function Villain(){
-Humanoid.call(this,obj);
+// function Villain(){
+//     Humanoid.call(this,obj);
+//       this.damage = obj.damage;
+//       this.healthPoints = obj.healthPoints;
+//     }
 
+class Villain extends Humanoid{
+    constructor(obj){
+        super(obj);
+        this.damage = obj.damage;
+    }
+    reduceHealth(){
+        return this.healthPoints - this.damage;
+    }
 }
-
-function Hero(){
-Humanoid.call(this,obj);
+    
+class Hero extends Humanoid{
+    constructor(obj){
+        super(obj);
+        this.damage = obj.damage;
+    }
+    receiveDamage(){
+        if ((this.healthPoints-this.damage) > 0){
+            return this.healthpoints-this.damage;
+        } else {
+            return `${this.name} has died`;
+        }
+    }
 }
+ 
 
-Villain.prototype = Object.create(Humanoid.prototype);
-Hero.prototype = Object.create(Humanoid.prototype)
+// function Hero(){
+//     Humanoid.call(this,obj);
+//       this.damage = obj.damage;
+//     }
+    
+    // Villain.prototype = Object.create(Humanoid.prototype);
+    // Hero.prototype = Object.create(Humanoid.prototype);
+    
 
 
 // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
 
-Villain.prototype.removeHealth = function(){
+// Hero.prototype.receiveDamage = function(){
+//     //set standard damage
+//     const damagePoints = this.damage;
+//     if (!(this.healthPoints-this.damage) <= 0){
+//         return this.healthpoints-this.damage;
+//     } else {
+//         return `${this.name} has died`;
+//     }
+//   };
 
-}
 
 
-
+// Villain.prototype.reduceHealth = function(){
+//     //set standard damage
+//     const damagePoints = this.damage;
+//     if ()
+  
+  
+//   };
+  
 
 // * Create two new objects, one a villain and one a hero and fight it out with methods!
+const newHero = new Hero({
+    createdAt: new Date(),
+    dimensions: {
+      length: 2,
+      width: 4,
+      height: 2,
+    },
+    healthPoints: 15,
+    name: 'Gimli',
+    team: 'The Council',
+    weapons: [
+      'Giant Axe',
+      'Shield',
+    ],
+    language: 'dwarvish',
+    damage: 3
+  });
+
+
+  let newVillain = new Villain({
+    createdAt: new Date(),
+    dimensions: {
+      length: 2,
+      width: 3,
+      height: 2,
+    },
+    healthPoints: 15,
+    name: 'Trogdor',
+    team: 'Chaos Dragons',
+    weapons: [
+      'Flame Breath',
+      'Scales',
+    ],
+    language: 'Dragon',
+    damage: 3
+  });
+
+  console.log(newHero.receiveDamage);
