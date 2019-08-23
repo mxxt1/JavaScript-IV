@@ -51,7 +51,14 @@ class Instructor extends Person{
     }
     grade(obj, subject){
         return `${obj.name} receives a perfect score on ${subject}.`;
-
+    }
+    addSubPoints(studentObj){
+        let originalGrade = studentObj.grade;
+        console.log(originalGrade);
+        let randomNum = (Math.floor(Math.random()*25)+1)*(Math.round(Math.random())*2-1);
+        console.log(randomNum);
+        return studentObj.grade += randomNum; 
+        // return `Old Grade: ${originalGrade}, New Grade: ${studentObj.grade}`;
     }
 }
 
@@ -93,6 +100,7 @@ class Students extends Person{
      this.previousBackground = obj.previousBackground;
      this.classname = obj.classname;   
      this.favSubjects = obj.favSubjects 
+     this.grade = obj.grade;
     }
     listsSubjects(){
         for (let i=0;i<this.favSubjects.length;i++){
@@ -105,6 +113,13 @@ class Students extends Person{
     }
     sprintChallenge(subject){
         return console.log(`${this.name} has begun sprint challenge on ${subject}.`);
+    }
+    graduate(){
+        if (this.grade >= 70){
+            return `${this.name} is eligible to graduate!`;
+        } else {
+            return `${this.name} is ineligible for graduation.`;
+        }
     }
 }
 
@@ -119,7 +134,8 @@ const studentMoe = new Students({
     catchPhrase: "Greed is good",
     previousBackground: 'Medicine',
     classname: 'cs15',
-    favSubjects: ['math','programming']
+    favSubjects: ['math','programming'],
+    grade: 90
 });
 
 const studentJill = new Students({
@@ -131,7 +147,8 @@ const studentJill = new Students({
     catchPhrase: "Wherever your go, there you are",
     previousBackground: 'Mechanical Eng',
     classname: 'ME35',
-    favSubjects: ['math','programming']
+    favSubjects: ['math','programming'],
+    grade: 82
 });
 
 const studentRyan = new Students({
@@ -143,7 +160,8 @@ const studentRyan = new Students({
     catchPhrase: "I... like design",
     previousBackground: 'Sociology',
     classname: 'cs325',
-    favSubjects: ['math','programming']
+    favSubjects: ['math','programming'],
+    grade: 60
 });
 
 
@@ -202,3 +220,9 @@ studentMoe.PRAssignement('teststring');
 studentJill.sprintChallenge('test subject');
 pMJane.standUp('web23');
 pMJane.debugsCode(studentJill,'python');
+console.log(instructorJane.addSubPoints(studentJill));
+console.log(studentJill.graduate());
+
+
+
+
